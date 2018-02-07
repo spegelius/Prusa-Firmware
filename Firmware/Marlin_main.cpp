@@ -1952,7 +1952,7 @@ static float probe_pt(float x, float y, float z_before) {
 bool check_commands() {
 	  bool end_command_found = false;
 
-	  if (buflen)
+	  while (buflen)
 	  {
 		  if ((code_seen("M84")) || (code_seen("M 84"))) end_command_found = true;
 		  if (!cmdbuffer_front_already_processed)
@@ -2218,7 +2218,7 @@ bool gcode_M45(bool onlyZ) {
 			lcd_wait_for_cool_down();
 			lcd_show_fullscreen_message_and_wait_P(MSG_PAPER);
 			lcd_display_message_fullscreen_P(MSG_FIND_BED_OFFSET_AND_SKEW_LINE1);
-			lcd_implementation_print_at(0, 2, 1);
+			lcd_implementation_print_at(0, 3, 1);
 			lcd_printPGM(MSG_FIND_BED_OFFSET_AND_SKEW_LINE2);
 		}
 
@@ -2433,7 +2433,7 @@ void process_commands()
         return;
     } else if (code_seen("SERIAL HIGH")) {
         MYSERIAL.println("SERIAL HIGH");
-        MYSERIAL.begin(1152000);
+        MYSERIAL.begin(115200);
         return;
     } else if(code_seen("Beat")) {
         // Kick farm link timer
@@ -2461,8 +2461,9 @@ void process_commands()
         #ifdef FILAMENT_RUNOUT_SUPPORT
             
             if(READ(FR_SENS)){
+			enquecommand_front_P((PSTR(FILAMENT_RUNOUT_SCRIPT)));
 
-                        feedmultiplyBckp=feedmultiply;
+/*                        feedmultiplyBckp=feedmultiply;
                         float target[4];
                         float lastpos[4];
                         target[X_AXIS]=current_position[X_AXIS];
@@ -2624,7 +2625,7 @@ void process_commands()
 
                         sprintf_P(cmd, PSTR("M220 S%i"), feedmultiplyBckp);
                         enquecommand(cmd);
-
+*/
             }
 
 
@@ -3364,9 +3365,11 @@ void process_commands()
 		current_position[Y_AXIS] = pgm_read_float(bed_ref_points + 1);
 		bool clamped = world2machine_clamp(current_position[X_AXIS], current_position[Y_AXIS]);
 
+		#ifdef SUPPORT_VERBOSITY
 		if (verbosity_level >= 1) {
 			clamped ? SERIAL_PROTOCOLPGM("First calibration point clamped.\n") : SERIAL_PROTOCOLPGM("No clamping for first calibration point.\n");
 		}
+		#endif // SUPPORT_VERBOSITY
 		//            mbl.get_meas_xy(0, 0, current_position[X_AXIS], current_position[Y_AXIS], false);            
 		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], homing_feedrate[X_AXIS] / 30, active_extruder);
 		// Wait until the move is finished.
@@ -3380,13 +3383,17 @@ void process_commands()
 		int XY_AXIS_FEEDRATE = homing_feedrate[X_AXIS] / 20;
 		int Z_LIFT_FEEDRATE = homing_feedrate[Z_AXIS] / 40;
 		bool has_z = is_bed_z_jitter_data_valid(); //checks if we have data from Z calibration (offsets of the Z heiths of the 8 calibration points from the first point)
+		#ifdef SUPPORT_VERBOSITY
 		if (verbosity_level >= 1) {
 			has_z ? SERIAL_PROTOCOLPGM("Z jitter data from Z cal. valid.\n") : SERIAL_PROTOCOLPGM("Z jitter data from Z cal. not valid.\n");
 		}
+		#endif // SUPPORT_VERBOSITY
 		setup_for_endstop_move(false); //save feedrate and feedmultiply, sets feedmultiply to 100
 		const char *kill_message = NULL;
 		while (mesh_point != MESH_MEAS_NUM_X_POINTS * MESH_MEAS_NUM_Y_POINTS) {
+			#ifdef SUPPORT_VERBOSITY
 			if (verbosity_level >= 1) SERIAL_ECHOLNPGM("");
+			#endif // SUPPORT_VERBOSITY
 			// Get coords of a measuring point.
 			ix = mesh_point % MESH_MEAS_NUM_X_POINTS; // from 0 to MESH_NUM_X_POINTS - 1
 			iy = mesh_point / MESH_MEAS_NUM_X_POINTS;
@@ -3395,7 +3402,7 @@ void process_commands()
 			if (has_z && mesh_point > 0) {
 				uint16_t z_offset_u = eeprom_read_word((uint16_t*)(EEPROM_BED_CALIBRATION_Z_JITTER + 2 * (ix + iy * 3 - 1)));
 				z0 = mbl.z_values[0][0] + *reinterpret_cast<int16_t*>(&z_offset_u) * 0.01;
-				//#if 0
+				#ifdef SUPPORT_VERBOSITY
 				if (verbosity_level >= 1) {
 					SERIAL_ECHOPGM("Bed leveling, point: ");
 					MYSERIAL.print(mesh_point);
@@ -3403,7 +3410,7 @@ void process_commands()
 					MYSERIAL.print(z0, 5);
 					SERIAL_ECHOLNPGM("");
 				}
-				//#endif
+				#endif // SUPPORT_VERBOSITY
 			}
 
 			// Move Z up to MESH_HOME_Z_SEARCH.
@@ -3418,11 +3425,13 @@ void process_commands()
 
 
 			world2machine_clamp(current_position[X_AXIS], current_position[Y_AXIS]);
+			#ifdef SUPPORT_VERBOSITY
 			if (verbosity_level >= 1) {
 
 				SERIAL_PROTOCOL(mesh_point);
 				clamped ? SERIAL_PROTOCOLPGM(": xy clamped.\n") : SERIAL_PROTOCOLPGM(": no xy clamping\n");
 			}
+			#endif // SUPPORT_VERBOSITY
 
 
 			plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], XY_AXIS_FEEDRATE, active_extruder);
@@ -3442,7 +3451,7 @@ void process_commands()
 				kill_message = MSG_BED_LEVELING_FAILED_POINT_HIGH;
 				break;
 			}
-
+			#ifdef SUPPORT_VERBOSITY
 			if (verbosity_level >= 10) {
 				SERIAL_ECHOPGM("X: ");
 				MYSERIAL.print(current_position[X_AXIS], 5);
@@ -3451,24 +3460,26 @@ void process_commands()
 				MYSERIAL.print(current_position[Y_AXIS], 5);
 				SERIAL_PROTOCOLPGM("\n");
 			}
-
 			if (verbosity_level >= 1) {
 				SERIAL_ECHOPGM("mesh bed leveling: ");
 				MYSERIAL.print(current_position[Z_AXIS], 5);
 				SERIAL_ECHOLNPGM("");
 			}
+			#endif // SUPPORT_VERBOSITY
 			mbl.set_z(ix, iy, current_position[Z_AXIS]); //store measured z values z_values[iy][ix] = z;
 
 			custom_message_state--;
 			mesh_point++;
 			lcd_update(1);
 		}
-		if (verbosity_level >= 20) SERIAL_ECHOLNPGM("Mesh bed leveling while loop finished.");
 		current_position[Z_AXIS] = MESH_HOME_Z_SEARCH;
+		#ifdef SUPPORT_VERBOSITY
 		if (verbosity_level >= 20) {
+			SERIAL_ECHOLNPGM("Mesh bed leveling while loop finished.");
 			SERIAL_ECHOLNPGM("MESH_HOME_Z_SEARCH: ");
 			MYSERIAL.print(current_position[Z_AXIS], 5);
 		}
+		#endif // SUPPORT_VERBOSITY
 		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], current_position[E_AXIS], Z_LIFT_FEEDRATE, active_extruder);
 		st_synchronize();
 		if (mesh_point != MESH_MEAS_NUM_X_POINTS * MESH_MEAS_NUM_Y_POINTS) {
@@ -3482,9 +3493,11 @@ void process_commands()
 		SERIAL_ECHOLNPGM("babystep applied");
 		bool eeprom_bed_correction_valid = eeprom_read_byte((unsigned char*)EEPROM_BED_CORRECTION_VALID) == 1;
 
+		#ifdef SUPPORT_VERBOSITY
 		if (verbosity_level >= 1) {
 			eeprom_bed_correction_valid ? SERIAL_PROTOCOLPGM("Bed correction data valid\n") : SERIAL_PROTOCOLPGM("Bed correction data not valid\n");
 		}
+		#endif // SUPPORT_VERBOSITY
 
 		for (uint8_t i = 0; i < 4; ++i) {
 			unsigned char codes[4] = { 'L', 'R', 'F', 'B' };
@@ -4620,8 +4633,6 @@ Sigma_Exit:
 	case 110:   // M110 - reset line pos
 		if (code_seen('N'))
 			gcode_LastN = code_value_long();
-		else
-			gcode_LastN = 0;
 		break;
 #ifdef HOST_KEEPALIVE_FEATURE
 	case 113: // M113 - Get or set Host Keepalive interval
@@ -5768,7 +5779,9 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 
   else if(code_seen('T'))
   {
+	
 	  int index;
+	  st_synchronize();
 	  for (index = 1; *(strchr_pointer + index) == ' ' || *(strchr_pointer + index) == '\t'; index++);
 	   
 	  if ((*(strchr_pointer + index) < '0' || *(strchr_pointer + index) > '9') && *(strchr_pointer + index) != '?') {
@@ -5790,7 +5803,6 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
       
       snmm_extruder = tmp_extruder;
 
-		  st_synchronize();
 		  delay(100);
 
 		  disable_e0();

@@ -556,10 +556,15 @@ void lcd_commands()
 	if (lcd_commands_type == LCD_COMMAND_LONG_PAUSE)
 	{
 		if(lcd_commands_step == 0) {
-			card.pauseSDPrint();
-			lcd_setstatuspgm(MSG_FINISHING_MOVEMENTS);
-			lcdDrawUpdate = 3;
-			lcd_commands_step = 1;
+			if (card.sdprinting) {
+				card.pauseSDPrint();
+				lcd_setstatuspgm(MSG_FINISHING_MOVEMENTS);
+				lcdDrawUpdate = 3;
+				lcd_commands_step = 1;
+			}
+			else {
+				lcd_commands_type = 0;
+			}
 		}
 		if (lcd_commands_step == 1 && !blocks_queued()) {
 			lcd_setstatuspgm(MSG_PRINT_PAUSED);
@@ -652,7 +657,7 @@ void lcd_commands()
 			enquecommand_P(PSTR("M190 S55"));
 			enquecommand_P(PSTR("M109 S210"));
 			enquecommand_P(PSTR("T0"));
-			enquecommand_P(PSTR("M117 First layer cal."));
+			enquecommand_P(MSG_M117_V2_CALIBRATION);
 			enquecommand_P(PSTR("G87")); //sets calibration status
 			enquecommand_P(PSTR("G28"));
 			enquecommand_P(PSTR("G21")); //set units to millimeters
@@ -667,8 +672,8 @@ void lcd_commands()
 		{
 			lcd_timeoutToStatus = millis() + LCD_TIMEOUT_TO_STATUS;
 			enquecommand_P(PSTR("G1 Z0.250 F7200.000"));
-			enquecommand_P(PSTR("G1 X50.0 E80.0  F1000.0"));
-			enquecommand_P(PSTR("G1 X160.0 E20.0  F1000.0"));
+			enquecommand_P(PSTR("G1 X50.0 E80.0 F1000.0"));
+			enquecommand_P(PSTR("G1 X160.0 E20.0 F1000.0"));
 			enquecommand_P(PSTR("G1 Z0.200 F7200.000"));
 			enquecommand_P(PSTR("G1 X220.0 E13 F1000.0"));
 			enquecommand_P(PSTR("G1 X240.0 E0 F1000.0"));
@@ -727,7 +732,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -737,7 +742,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -756,7 +761,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -766,7 +771,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -785,7 +790,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -795,7 +800,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -814,7 +819,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -824,7 +829,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -835,7 +840,7 @@ void lcd_commands()
 		if (lcd_commands_step == 3 && !blocks_queued() && cmd_buffer_empty())
 		{
 			lcd_timeoutToStatus = millis() + LCD_TIMEOUT_TO_STATUS;
-			enquecommand_P(PSTR("G1 E - 0.07500 F2100.00000"));
+			enquecommand_P(PSTR("G1 E-0.07500 F2100.00000"));
 			enquecommand_P(PSTR("G4 S0"));
 			enquecommand_P(PSTR("G1 E-4 F2100.00000"));
 			enquecommand_P(PSTR("G1 Z0.5 F7200.000"));
@@ -866,7 +871,7 @@ void lcd_commands()
 			enquecommand_P(PSTR("G1 X50 Y1 E-5.0000"));
 			enquecommand_P(PSTR("G1 F2400"));
 			enquecommand_P(PSTR("G1 X0 Y1 E5.0000"));
-			enquecommand_P(PSTR("G1 X50 Y1 E - 5.0000"));
+			enquecommand_P(PSTR("G1 X50 Y1 E-5.0000"));
 			enquecommand_P(PSTR("G1 F2400"));
 			enquecommand_P(PSTR("G1 X0 Y1 E5.0000"));
 			enquecommand_P(PSTR("G1 X50 Y1 E-3.0000"));
@@ -915,7 +920,7 @@ void lcd_commands()
 			enquecommand_P(PSTR("M140 S55"));
 			enquecommand_P(PSTR("M190 S55"));
 			enquecommand_P(PSTR("M109 S210"));
-			enquecommand_P(PSTR("M117 First layer cal."));
+			enquecommand_P(MSG_M117_V2_CALIBRATION);
 			enquecommand_P(PSTR("G87")); //sets calibration status
 			enquecommand_P(PSTR("G28"));
 			enquecommand_P(PSTR("G92 E0.0"));
@@ -926,13 +931,13 @@ void lcd_commands()
 			
 			lcd_implementation_clear();
 			lcd_goto_menu(lcd_babystep_z, 0, false);			
-			enquecommand_P(PSTR("G1 X60.0 E9.0  F1000.0")); //intro line
-			enquecommand_P(PSTR("G1 X100.0 E12.5  F1000.0")); //intro line			
+			enquecommand_P(PSTR("G1 X60.0 E9.0 F1000.0")); //intro line
+			enquecommand_P(PSTR("G1 X100.0 E12.5 F1000.0")); //intro line			
 			enquecommand_P(PSTR("G92 E0.0"));
 			enquecommand_P(PSTR("G21")); //set units to millimeters
 			enquecommand_P(PSTR("G90")); //use absolute coordinates
 			enquecommand_P(PSTR("M83")); //use relative distances for extrusion
-			enquecommand_P(PSTR("G1 E - 1.50000 F2100.00000"));
+			enquecommand_P(PSTR("G1 E-1.50000 F2100.00000"));
 			enquecommand_P(PSTR("G1 Z0.150 F7200.000"));
 			enquecommand_P(PSTR("M204 S1000")); //set acceleration
 			enquecommand_P(PSTR("G1 F4000"));
@@ -997,7 +1002,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -1007,7 +1012,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -1026,7 +1031,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -1036,7 +1041,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -1055,7 +1060,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -1065,7 +1070,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -1084,7 +1089,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (2 * i + 1)*width));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 X50 Y");
@@ -1094,7 +1099,7 @@ void lcd_commands()
 				enquecommand(cmd1);
 				strcpy(cmd1, "G1 Y");
 				strcat(cmd1, ftostr32(35 - (i + 1)*width * 2));
-				strcat(cmd1, "E ");
+				strcat(cmd1, " E");
 				strcat(cmd1, ftostr43(extr_short_segment));
 				enquecommand(cmd1);
 			}
@@ -1105,7 +1110,7 @@ void lcd_commands()
 		if (lcd_commands_step == 2 && !blocks_queued() && cmd_buffer_empty())
 		{
 			lcd_timeoutToStatus = millis() + LCD_TIMEOUT_TO_STATUS;
-			enquecommand_P(PSTR("G1 E - 0.07500 F2100.00000"));
+			enquecommand_P(PSTR("G1 E-0.07500 F2100.00000"));
 			enquecommand_P(PSTR("M107")); //turn off printer fan
 			enquecommand_P(PSTR("M104 S0")); // turn off temperature
 			enquecommand_P(PSTR("M140 S0")); // turn off heatbed
@@ -1288,14 +1293,19 @@ void lcd_commands()
 			pid_tuning_finished = false;
 			custom_message_state = 0;
 			lcd_setstatuspgm(MSG_PID_FINISHED);
-			strcpy(cmd1, "M301 P");
-			strcat(cmd1, ftostr32(_Kp));
-			strcat(cmd1, " I");
-			strcat(cmd1, ftostr32(_Ki));
-			strcat(cmd1, " D");
-			strcat(cmd1, ftostr32(_Kd));
-			enquecommand(cmd1);
-			enquecommand_P(PSTR("M500"));
+			if (_Kp != 0 || _Ki != 0 || _Kd != 0) {
+				strcpy(cmd1, "M301 P");
+				strcat(cmd1, ftostr32(_Kp));
+				strcat(cmd1, " I");
+				strcat(cmd1, ftostr32(_Ki));
+				strcat(cmd1, " D");
+				strcat(cmd1, ftostr32(_Kd));
+				enquecommand(cmd1);
+				enquecommand_P(PSTR("M500"));
+			}
+			else {
+				SERIAL_ECHOPGM("Invalid PID cal. results. Not stored to EEPROM.");
+			}
 			display_time = millis();
 			lcd_commands_step = 1;
 		}
@@ -2323,7 +2333,7 @@ calibrated:
     }else{
 		lcd_show_fullscreen_message_and_wait_P(MSG_PAPER);
         lcd_display_message_fullscreen_P(MSG_FIND_BED_OFFSET_AND_SKEW_LINE1);
-        lcd_implementation_print_at(0, 2, 1);
+        lcd_implementation_print_at(0, 3, 1);
         lcd_printPGM(MSG_FIND_BED_OFFSET_AND_SKEW_LINE2);
     }
     
@@ -2504,8 +2514,11 @@ int8_t lcd_show_multiscreen_message_yes_no_and_wait_P(const char *msg, bool allo
 				while (lcd_clicked());
 				delay(10);
 				while (lcd_clicked());
-				KEEPALIVE_STATE(IN_HANDLER);
-				if(msg_next == NULL) return yes;
+				if (msg_next == NULL) {
+					KEEPALIVE_STATE(IN_HANDLER);
+					lcd_set_custom_characters();
+					return yes;
+				}
 				else break;
 			}
 		}
@@ -3054,6 +3067,19 @@ static void lcd_silent_mode_set() {
   digipot_init();
   lcd_goto_menu(lcd_settings_menu, 7);
 }
+
+static void lcd_silent_mode_set_tune() {
+  switch (SilentModeMenu) {
+  case 0: SilentModeMenu = 1; break;
+  case 1: SilentModeMenu = 2; break;
+  case 2: SilentModeMenu = 0; break;
+  default: SilentModeMenu = 0; break;
+  }
+  eeprom_update_byte((unsigned char *)EEPROM_SILENT, SilentModeMenu);
+  digipot_init();
+  lcd_goto_menu(lcd_tune_menu, 8);
+}
+
 static void lcd_set_lang(unsigned char lang) {
   lang_selected = lang;
   firstrun = 1;
@@ -3271,6 +3297,7 @@ void lcd_wizard() {
 		lcd_wizard(0);
 	}
 	else {
+		lcd_return_to_status();
 		lcd_update_enable(true);
 		lcd_update(2);
 	}
@@ -4745,17 +4772,6 @@ static void lcd_autostart_sd()
 }
 
 
-static void lcd_silent_mode_set_tune() {
-  switch (SilentModeMenu) {
-  case 0: SilentModeMenu = 1; break;
-  case 1: SilentModeMenu = 2; break;
-  case 2: SilentModeMenu = 0; break;
-  default: SilentModeMenu = 0; break;
-  }
-  eeprom_update_byte((unsigned char *)EEPROM_SILENT, SilentModeMenu);
-  digipot_init();
-  lcd_goto_menu(lcd_tune_menu, 9);
-}
 #endif
 
 static void lcd_colorprint_change() {
@@ -4787,13 +4803,13 @@ static void lcd_tune_menu()
 #ifdef FILAMENTCHANGEENABLE
   MENU_ITEM(function, MSG_FILAMENTCHANGE, lcd_colorprint_change);//7
 #endif
-  
-  if (!farm_mode) { //dont show in menu if we are in farm mode
+
+  if (!farm_mode) { //dont show in menu if we are in farm mode //8
 	  switch (SilentModeMenu) {
-	  case 0: MENU_ITEM(function, MSG_SILENT_MODE_OFF, lcd_silent_mode_set); break;
-	  case 1: MENU_ITEM(function, MSG_SILENT_MODE_ON, lcd_silent_mode_set); break;
-	  case 2: MENU_ITEM(function, MSG_AUTO_MODE_ON, lcd_silent_mode_set); break;
-	  default: MENU_ITEM(function, MSG_SILENT_MODE_OFF, lcd_silent_mode_set); break;
+	  case 0: MENU_ITEM(function, MSG_SILENT_MODE_OFF, lcd_silent_mode_set_tune); break;
+	  case 1: MENU_ITEM(function, MSG_SILENT_MODE_ON, lcd_silent_mode_set_tune); break;
+	  case 2: MENU_ITEM(function, MSG_AUTO_MODE_ON, lcd_silent_mode_set_tune); break;
+	  default: MENU_ITEM(function, MSG_SILENT_MODE_OFF, lcd_silent_mode_set_tune); break;
 	  }
   }
   END_MENU();
@@ -5773,7 +5789,6 @@ static bool check_file(const char* filename) {
 		get_command();
 		result = check_commands();
 	}
-	cmdqueue_reset();
 	card.printingHasFinished();
 	strncpy_P(lcd_status_message, WELCOME_MSG, LCD_WIDTH);
 	return result;

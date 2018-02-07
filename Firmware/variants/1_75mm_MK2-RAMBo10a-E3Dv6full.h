@@ -172,6 +172,7 @@ ADDITIONAL FEATURES SETTINGS
 
 #ifdef FILAMENT_RUNOUT_SUPPORT
 #define FILAMENT_RUNOUT_SENSOR 1
+#define FILAMENT_RUNOUT_SCRIPT "M600"
 #endif
 
 // temperature runaway
@@ -403,5 +404,9 @@ THERMISTORS SETTINGS
 #endif
 
 #define END_FILE_SECTION 10000 //number of bytes from end of file used for checking if file is complete
+
+#ifndef SNMM
+#define SUPPORT_VERBOSITY
+#endif
 
 #endif //__CONFIGURATION_PRUSA_H
