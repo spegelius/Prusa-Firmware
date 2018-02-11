@@ -26,7 +26,7 @@ AXIS SETTINGS
 // Steps per unit {X,Y,Z,E}
 
 // Titan
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,817}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,817/2}
 
 // Endstop inverting
 const bool X_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
@@ -165,8 +165,8 @@ MOTOR CURRENT SETTINGS
 #if MOTHERBOARD == 102 || MOTHERBOARD == 302
 #define MOTOR_CURRENT_PWM_RANGE 2000
 
-#define DEFAULT_PWM_MOTOR_CURRENT  {270, 830, 1050} // {XY,Z,E}
-#define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {540, 830, 1150} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT  {270, 830, 600} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {540, 830, 700} // {XY,Z,E}
 #endif
 
 /*------------------------------------
