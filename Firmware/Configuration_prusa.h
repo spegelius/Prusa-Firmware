@@ -13,10 +13,10 @@ GENERAL SETTINGS
 #define DEVELOPER
 
 // Printer name
-#define CUSTOM_MENDEL_NAME "Prusa i3 MK2"
+#define CUSTOM_MENDEL_NAME "Prusa i3 MK2Dollo"
 
 // Electronics
-#define MOTHERBOARD BOARD_RAMBO_MINI_1_3
+#define MOTHERBOARD BOARD_RAMPS_13_EFB
 
 // Prusa Single extruder multiple material suport
 //#define SNMM
@@ -27,6 +27,18 @@ GENERAL SETTINGS
 //#define E3D_PT100_BED_WITH_AMP
 //#define E3D_PT100_BED_NO_AMP
 
+//Add some magic to remove PWM motor control,
+#if MOTHERBOARD == BOARD_RAMPS_13_EFB
+#define HAS_DIGIPOTSS false
+#define HAS_MOTOR_CURRENT_PWM false
+#define MOTOR_CURRENT_PWM_RANGE 0
+#define DEFAULT_PWM_MOTOR_CURRENT {0, 0, 0} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT_LOUD {0, 0, 0} // {XY,Z,E}
+#define HOTENDS 1
+#define MOSFET_D_PIN 4 // for MKS 1.4 board use 7 (heater 1)
+#define Z_SILENT 0
+#define Z_HIGH_POWER 0
+#endif
 
 /*------------------------------------
 AXIS SETTINGS
@@ -38,7 +50,7 @@ AXIS SETTINGS
 #else
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,161.3}
 // Titan
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,817}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,817/2}
 #endif
 
 
@@ -119,15 +131,11 @@ EXTRUDER SETTINGS
 #define EXTRUDE_MINTEMP 130
 
 // Extruder cooling fans
-#define EXTRUDER_0_AUTO_FAN_PIN   8
+#define EXTRUDER_0_AUTO_FAN_PIN 6 // 8
 #define EXTRUDER_1_AUTO_FAN_PIN   -1
 #define EXTRUDER_2_AUTO_FAN_PIN   -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
 #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
-
-
-
-
 
 
 #ifdef SNMM

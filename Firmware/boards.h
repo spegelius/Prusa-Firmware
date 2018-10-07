@@ -8,7 +8,7 @@
 #define BOARD_RAMBO_MINI_1_3    302  // Rambo-mini 1.3
 #define BOARD_RAMBO_MINI_1_0    102  // Rambo-mini 1.0
 
-
+#define BOARD_RAMPS_13_EFB      33 // RAMPS 1.3 (Power outputs: Hotend, Fan, Bed)
 #define BOARD_99                99   // This is in pins.h but...?
 
 #define MB(board) (MOTHERBOARD==BOARD_##board)
