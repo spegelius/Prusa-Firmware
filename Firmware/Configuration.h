@@ -134,8 +134,8 @@
 //#define HEATER_BED_DUTY_CYCLE_DIVIDER 4
 
 // If you want the M105 heater power reported in watts, define the BED_WATTS, and (shared for all extruders) EXTRUDER_WATTS
-//#define EXTRUDER_WATTS (12.0*12.0/6.7) //  P=I^2/R
-//#define BED_WATTS (12.0*12.0/1.1)      // P=I^2/R
+#define EXTRUDER_WATTS (14.0*14.0/5.4) //  P=I^2/R
+#define BED_WATTS (14.0*14.0/1.1)      // P=I^2/R
 
 // PID settings:
 // Comment the following line to disable PID and enable bang-bang.
