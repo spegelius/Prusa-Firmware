@@ -13,7 +13,7 @@ GENERAL SETTINGS
 #define DEVELOPER
 
 // Printer name
-#define CUSTOM_MENDEL_NAME "Prusa i3 MK2Dollo"
+#define CUSTOM_MENDEL_NAME "i3 MK2Dollo"
 
 // Electronics
 #define MOTHERBOARD BOARD_RAMPS_13_EFB
@@ -50,7 +50,10 @@ AXIS SETTINGS
 #else
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,161.3}
 // Titan
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,817/2}
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   {100,100,3200/8,817/2}
+
+//Titan & 0.9 degree motors
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,817/2}
 #endif
 
 
@@ -69,7 +72,7 @@ const bool Z_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 #define X_MIN_POS 0
 #define Y_MAX_POS 210
 #define Y_MIN_POS -2.2
-#define Z_MAX_POS 210
+#define Z_MAX_POS 240
 #define Z_MIN_POS 0.15
 
 // Canceled home position
@@ -131,7 +134,7 @@ EXTRUDER SETTINGS
 #define EXTRUDE_MINTEMP 130
 
 // Extruder cooling fans
-#define EXTRUDER_0_AUTO_FAN_PIN 6 // 8
+#define EXTRUDER_0_AUTO_FAN_PIN SERVO1_PIN // 8
 #define EXTRUDER_1_AUTO_FAN_PIN   -1
 #define EXTRUDER_2_AUTO_FAN_PIN   -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
@@ -259,7 +262,7 @@ BED SETTINGS
 // all forms of bed control obey this (PID, bang-bang, bang-bang with hysteresis)
 // setting this to anything other than 255 enables a form of PWM to the bed just like HEATER_BED_DUTY_CYCLE_DIVIDER did,
 // so you shouldn't use it unless you are OK with PWM on your bed.  (see the comment on enabling PIDTEMPBED)
-#define MAX_BED_POWER 255 // limits duty cycle to bed; 255=full current
+#define MAX_BED_POWER 160 // limits duty cycle to bed; 255=full current
 
 // Bed temperature compensation settings
 #define BED_OFFSET 10
