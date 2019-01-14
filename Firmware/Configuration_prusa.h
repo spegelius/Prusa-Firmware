@@ -54,6 +54,10 @@ AXIS SETTINGS
 
 //Titan & 0.9 degree motors
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,817/2}
+
+//Titan & 0.9 degree motors & DRV8825
+//#define DEFAULT_AXIS_STEPS_PER_UNIT   {400,400,3200/8,817/2}
+
 #endif
 
 
@@ -262,7 +266,7 @@ BED SETTINGS
 // all forms of bed control obey this (PID, bang-bang, bang-bang with hysteresis)
 // setting this to anything other than 255 enables a form of PWM to the bed just like HEATER_BED_DUTY_CYCLE_DIVIDER did,
 // so you shouldn't use it unless you are OK with PWM on your bed.  (see the comment on enabling PIDTEMPBED)
-#define MAX_BED_POWER 190 // limits duty cycle to bed; 255=full current
+#define MAX_BED_POWER 230 // limits duty cycle to bed; 255=full current
 
 // Bed temperature compensation settings
 #define BED_OFFSET 10
