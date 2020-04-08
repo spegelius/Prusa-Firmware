@@ -331,6 +331,7 @@
 
 
 
+#include "pins_ramps.h"
 
 #ifndef KNOWN_BOARD
 #error Unknown MOTHERBOARD value in configuration.h
