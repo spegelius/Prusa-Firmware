@@ -61,7 +61,7 @@
 
 #define TEMP_PINDA_PIN          1 //A1
 
-
+#define CONTROLLERFAN_PIN      -1 //Pin used for the fan to cool controller (-1 to disable)
 
 #define E0_STEP_PIN            34
 #define E0_DIR_PIN             43

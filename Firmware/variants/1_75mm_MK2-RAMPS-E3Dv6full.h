@@ -6,6 +6,7 @@ GENERAL SETTINGS
 *------------------------------------*/
 
 // Printer revision
+#define PRINTER_TYPE PRINTER_MK2
 #define FILAMENT_SIZE "1_75mm_MK2"
 #define NOZZLE_TYPE "E3Dv6full"
 
@@ -28,15 +29,9 @@ GENERAL SETTINGS
 //#define E3D_PT100_BED_NO_AMP
 
 //Add some magic to remove PWM motor control,
-#define HAS_DIGIPOTSS false
 #define HAS_MOTOR_CURRENT_PWM false
-#define MOTOR_CURRENT_PWM_RANGE 0
-#define DEFAULT_PWM_MOTOR_CURRENT {0, 0, 0} // {XY,Z,E}
-#define DEFAULT_PWM_MOTOR_CURRENT_LOUD {0, 0, 0} // {XY,Z,E}
 #define HOTENDS 1
 #define MOSFET_D_PIN 4 // for MKS 1.4 board use 7 (heater 1)
-#define Z_SILENT 0
-#define Z_HIGH_POWER 0
 
 /*------------------------------------
 AXIS SETTINGS
@@ -58,14 +53,20 @@ AXIS SETTINGS
 
 //Titan & 0.9 degree motors & DRV8825
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {400,400,3200/8,817/2}
-
 #endif
 
-
 // Endstop inverting
-const bool X_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
-const bool Y_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
-const bool Z_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
+#define X_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
+#define Y_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
+#define Z_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
+
+// Direction inverting
+#define INVERT_X_DIR 1    // for Mendel set to 0, for Orca set to 1
+#define INVERT_Y_DIR 1    // for Mendel set to 1, for Orca set to 0
+#define INVERT_Z_DIR 0    // for Mendel set to 0, for Orca set to 1
+#define INVERT_E0_DIR 0    // for direct drive extruder v9 set to 1, for geared extruder set to 0
+#define INVERT_E1_DIR 1    // for direct drive extruder v9 set to 1, for geared extruder set to 0
+#define INVERT_E2_DIR 1    // for direct drive extruder v9 set to 1, for geared extruder set to
 
 // Home position
 #define MANUAL_X_HOME_POS 0
@@ -103,6 +104,10 @@ const bool Z_MIN_ENDSTOP_INVERTING = false; // set to true to invert the logic o
 
 #define Z_AXIS_ALWAYS_ON 1
 
+// New XYZ calibration
+//#define NEW_XYZCAL
+
+
 /*------------------------------------
 EXTRUDER SETTINGS
 *------------------------------------*/
@@ -121,7 +126,7 @@ EXTRUDER SETTINGS
 #endif
 #define HEATER_1_MAXTEMP 305
 #define HEATER_2_MAXTEMP 305
-#define BED_MAXTEMP 125
+#define BED_MAXTEMP 150
 
 #if defined(E3D_PT100_EXTRUDER_WITH_AMP) || defined(E3D_PT100_EXTRUDER_NO_AMP)
 // Define PID constants for extruder with PT100
@@ -136,7 +141,7 @@ EXTRUDER SETTINGS
 #endif
 
 // Extrude mintemp
-#define EXTRUDE_MINTEMP 175
+#define EXTRUDE_MINTEMP 130
 
 // Extruder cooling fans
 #define EXTRUDER_0_AUTO_FAN_PIN SERVO1_PIN // 8
@@ -144,6 +149,7 @@ EXTRUDER SETTINGS
 #define EXTRUDER_2_AUTO_FAN_PIN   -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
 #define EXTRUDER_AUTO_FAN_SPEED   255  // == full speed
+
 
 #ifdef SNMM
 //#define BOWDEN_LENGTH	408
@@ -195,8 +201,6 @@ ADDITIONAL FEATURES SETTINGS
 #endif
 
 // temperature runaway
-#define TEMP_MAX_CHECKED_BED 95.0
-
 #define TEMP_RUNAWAY_BED_HYSTERESIS 5
 #define TEMP_RUNAWAY_BED_TIMEOUT 360
 
@@ -218,6 +222,14 @@ MOTOR CURRENT SETTINGS
 #define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {540, 830, 500} // {XY,Z,E}
 #define Z_SILENT 0
 #define Z_HIGH_POWER 200
+#endif
+
+#if MOTHERBOARD == BOARD_RAMPS_13_EFB
+#define MOTOR_CURRENT_PWM_RANGE 0
+#define DEFAULT_PWM_MOTOR_CURRENT  {0, 0, 0} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {0, 0, 0} // {XY,Z,E}
+#define Z_SILENT 0
+#define Z_HIGH_POWER 0
 #endif
 
 /*------------------------------------
@@ -304,6 +316,10 @@ BED SETTINGS
 /*-----------------------------------
 PREHEAT SETTINGS
 *------------------------------------*/
+
+#define FARM_PREHEAT_HOTEND_TEMP 250
+#define FARM_PREHEAT_HPB_TEMP 40
+#define FARM_PREHEAT_FAN_SPEED 0
 
 #define PLA_PREHEAT_HOTEND_TEMP 215
 #define PLA_PREHEAT_HPB_TEMP 55
@@ -408,8 +424,9 @@ THERMISTORS SETTINGS
 #define PINDA_MAX_T 100
 
 #define PING_TIME 60 //time in s
-#define PING_TIME_LONG 600 //10 min; used when length of commands buffer > 0 to avoid false triggering when dealing with long gcodes
-#define PING_ALERT_PERIOD 60 //time in s
+#define PING_TIME_LONG 600 //10 min; used when length of commands buffer > 0 to avoid 0 triggering when dealing with long gcodes
+#define PING_ALLERT_PERIOD 60 //time in s
+
 #define NC_TIME 10 //time in s for periodic important status messages sending which needs reponse from monitoring
 #define NC_BUTTON_LONG_PRESS 15 //time in s
 
@@ -424,7 +441,13 @@ THERMISTORS SETTINGS
 #define DEFAULT_RETRACTION 1 //used for PINDA temp calibration and pause print
 #endif
 
-#define END_FILE_SECTION 20000 //number of bytes from end of file used for checking if file is complete
+#define END_FILE_SECTION 10000 //number of bytes from end of file used for checking if file is complete
+
+// Safety timer
+#define SAFETYTIMER
+#define DEFAULT_SAFETYTIMER_TIME_MINS 30
+
+#define M600_TIMEOUT 600  //seconds
 
 #ifndef SNMM
 #define SUPPORT_VERBOSITY

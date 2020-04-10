@@ -1687,7 +1687,11 @@ static void lcd_menu_temperatures()
 #ifdef AMBIENT_THERMISTOR
 	lcd_printf_P(PSTR(ESC_H(1,2) "Ambient:  %d%c" ESC_H(1,3) "PINDA:    %d%c"), (int)current_temperature_ambient, '\x01', (int)current_temperature_pinda, '\x01');
 #else //AMBIENT_THERMISTOR
+#ifdef TEMP_PINDA_PIN
 	lcd_printf_P(PSTR(ESC_H(1,2) "PINDA:    %d%c"), (int)current_temperature_pinda, '\x01');
+#else
+        lcd_printf_P(PSTR(ESC_H(1,2) "PINDA:    N/A"));
+#endif
 #endif //AMBIENT_THERMISTOR
 
 	if (lcd_clicked())
@@ -2634,6 +2638,7 @@ void lcd_adjust_z() {
 
 }
 
+#ifdef TEMP_PINDA_PIN
 bool lcd_wait_for_pinda(float temp) {
 	lcd_set_custom_characters_degree();
 	setTargetHotend(0, 0);
@@ -2662,6 +2667,7 @@ bool lcd_wait_for_pinda(float temp) {
 	lcd_update_enable(true);
 	return(target_temp_reached);
 }
+#endif
 
 void lcd_wait_for_heater() {
 	lcd_display_message_fullscreen_P(_T(MSG_WIZARD_HEATING));

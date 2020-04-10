@@ -178,6 +178,8 @@
   #define FAN_PIN 4      // IO pin. Buffer needed
 #endif
 
+#define CONTROLLERFAN_PIN SERVO0_PIN //Pin used for the fan to cool controller (-1 to disable)
+
 //
 // Misc. Functions
 //

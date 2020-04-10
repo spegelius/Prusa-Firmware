@@ -856,8 +856,10 @@ void factory_reset(char level, bool quiet)
             eeprom_update_word((uint16_t *)EEPROM_FERROR_COUNT_TOT, 0);
             eeprom_update_word((uint16_t *)EEPROM_POWER_COUNT_TOT, 0);
 
+#ifdef PAT9125
             fsensor_enable();
             fautoload_set(true);
+#endif
                        
             WRITE(BEEPER, HIGH);
             _delay_ms(100);

@@ -20,6 +20,7 @@ void adc_init(void)
 	printf(("adc_init\n"));
 	adc_sim_mask = 0x00;
 	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+        //ADCSRA |= (1 << ADEN) | (1 << ADSC) | (1 << ADIF);
 	ADMUX |= (1 << REFS0);
 	ADCSRA |= (1 << ADEN);
 //	ADCSRA |= (1 << ADIF) | (1 << ADSC);
