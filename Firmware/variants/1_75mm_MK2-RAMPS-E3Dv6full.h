@@ -27,17 +27,6 @@ GENERAL SETTINGS
 //#define E3D_PT100_BED_WITH_AMP
 //#define E3D_PT100_BED_NO_AMP
 
-//Add some magic to remove PWM motor control,
-#define HAS_DIGIPOTSS false
-#define HAS_MOTOR_CURRENT_PWM false
-#define MOTOR_CURRENT_PWM_RANGE 0
-#define DEFAULT_PWM_MOTOR_CURRENT {0, 0, 0} // {XY,Z,E}
-#define DEFAULT_PWM_MOTOR_CURRENT_LOUD {0, 0, 0} // {XY,Z,E}
-#define HOTENDS 1
-#define MOSFET_D_PIN 4 // for MKS 1.4 board use 7 (heater 1)
-#define Z_SILENT 0
-#define Z_HIGH_POWER 0
-
 /*------------------------------------
 AXIS SETTINGS
 *------------------------------------*/
@@ -218,6 +207,16 @@ MOTOR CURRENT SETTINGS
 #define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {540, 830, 500} // {XY,Z,E}
 #define Z_SILENT 0
 #define Z_HIGH_POWER 200
+#endif
+
+#if MOTHERBOARD == BOARD_RAMPS_13_EFB
+#define MOTOR_CURRENT_PWM_RANGE 0
+#define DEFAULT_PWM_MOTOR_CURRENT {0, 0, 0} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT_LOUD {0, 0, 0} // {XY,Z,E}
+#define HOTENDS 1
+#define MOSFET_D_PIN 4 // for MKS 1.4 board use 7 (heater 1)
+#define Z_SILENT 0
+#define Z_HIGH_POWER 0
 #endif
 
 /*------------------------------------
