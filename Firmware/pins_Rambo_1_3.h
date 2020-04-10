@@ -14,7 +14,8 @@
 #define SWI2C_SDA      20 //SDA on P3
 #define SWI2C_SCL      21 //SCL on P3
 
-
+#define EXTRUDER_0_AUTO_FAN_PIN   8
+#define CONTROLLERFAN_PIN      -1  //Pin used for the fan to cool controller (-1 to disable)
 
 #define X_STEP_PIN             37
 #define X_DIR_PIN              48

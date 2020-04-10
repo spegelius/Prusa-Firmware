@@ -29,16 +29,7 @@ GENERAL SETTINGS
 //#define E3D_PT100_BED_WITH_AMP
 //#define E3D_PT100_BED_NO_AMP
 
-//Add some magic to remove PWM motor control,
-#define HAS_DIGIPOTSS false
-#define HAS_MOTOR_CURRENT_PWM false
-#define MOTOR_CURRENT_PWM_RANGE 0
-#define DEFAULT_PWM_MOTOR_CURRENT {0, 0, 0} // {XY,Z,E}
-#define DEFAULT_PWM_MOTOR_CURRENT_LOUD {0, 0, 0} // {XY,Z,E}
-#define HOTENDS 1
 #define MOSFET_D_PIN 4 // for MKS 1.4 board use 7 (heater 1)
-#define Z_SILENT 0
-#define Z_HIGH_POWER 0
 
 /*------------------------------------
 AXIS SETTINGS
@@ -55,17 +46,17 @@ AXIS SETTINGS
 //Titan & 0.9 degree motors
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,817/2}
 
-//MK2.5 extruder & 0.9 degree motors
+//MK2.5 R4 extruder & 0.9 degree motors
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {200,200,3200/8,133}
 
 //Titan & 0.9 degree motors & DRV8825
 //#define DEFAULT_AXIS_STEPS_PER_UNIT   {400,400,3200/8,817/2}
+#endif
 
 // Endstop inverting
 #define X_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
 #define Y_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
 #define Z_MIN_ENDSTOP_INVERTING 0 // set to 1 to invert the logic of the endstop.
-
 
 // Direction inverting
 #define INVERT_X_DIR 1    // for Mendel set to 0, for Orca set to 1
@@ -162,7 +153,6 @@ EXTRUDER SETTINGS
 #define EXTRUDE_MINTEMP 175
 
 // Extruder cooling fans
-#define EXTRUDER_0_AUTO_FAN_PIN SERVO1_PIN // 8
 #define EXTRUDER_1_AUTO_FAN_PIN   -1
 #define EXTRUDER_2_AUTO_FAN_PIN   -1
 #define EXTRUDER_AUTO_FAN_TEMPERATURE 50
@@ -242,6 +232,16 @@ MOTOR CURRENT SETTINGS
 #define Z_SILENT 0
 #define Z_HIGH_POWER 200
 #endif
+
+#if MOTHERBOARD == BOARD_RAMPS_13_EFB
+#define MOTOR_CURRENT_PWM_RANGE 0
+#define DEFAULT_PWM_MOTOR_CURRENT  {0, 0, 0} // {XY,Z,E}
+#define DEFAULT_PWM_MOTOR_CURRENT_LOUD  {0, 0, 0} // {XY,Z,E}
+#define Z_SILENT 0
+#define Z_HIGH_POWER 0
+#endif
+
+
 
 /*------------------------------------
 BED SETTINGS
